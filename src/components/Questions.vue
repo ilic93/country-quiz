@@ -1,6 +1,7 @@
 <template>
   <div>
     <b-jumbotron>
+
       <template v-if="!guessFlag">
         {{ country.capital }} is the capital of
       </template>
@@ -17,8 +18,8 @@
           </b-list-group-item>
       </b-list-group>
     
-      <!-- <b-button variant="primary" @click="submitAnswer" :disabled="selectedAnswer == null || answered">Submit</b-button> -->
       <b-button variant="success" v-if="answered" @click="fetchQuestion()">Next</b-button>
+
     </b-jumbotron>
   </div>
 </template>
@@ -31,7 +32,8 @@ export default {
       correctAnswer: null,
       answered: false,
       selectedAnswer: null,
-      guessFlag: false
+      guessFlag: false,
+      isCorrect: null
     }
   },
   methods: {
@@ -57,12 +59,11 @@ export default {
       this.correctAnswer = array.indexOf(x)
     },
     selectAnswer(index) {
-      let isCorrect = false
       this.selectedAnswer = index
       if(index == this.correctAnswer) {
-        isCorrect = true
+        this.isCorrect = true
       }
-      this.increment(isCorrect)
+      this.increment(this.isCorrect)
       this.answered = true
     },
     answerClass(index) {
@@ -90,6 +91,7 @@ export default {
       this.answered = false,
       this.selectedAnswer = null
       this.guessFlag = this.score % 2 !== 0 ? true : false
+      this.isCorrect = false
     }
   }
 }
@@ -135,4 +137,3 @@ export default {
   color: white !important;
 }
 </style>
-

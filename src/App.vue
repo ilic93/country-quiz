@@ -4,14 +4,15 @@
       <b-row>
         <b-col cols="8" offset="2" md="6" offset-md="3" style="position: relative;">
           <h3>Country Quiz</h3>
-          <img src="./assets/undraw_adventure_4hum 1.svg" class="quiz-photo" />
+          <img src="./assets/undraw_adventure_4hum 1.svg" class="quiz-photo" v-if="!finished"/>
           <Questions
-          v-if="countries.length"
+          v-if="countries.length && !finished"
           :country="country"
           :countries="countries"
           :increment="increment"
           :fetchQuestion="fetchQuestion"
           :score="score" />
+          <Results v-if="finished" :result="finalResult" :start="startAgain"/>
         </b-col>
       </b-row>
     </b-container>    
@@ -20,30 +21,44 @@
 
 <script>
 import Questions from './components/Questions.vue'
+import Results from './components/Results.vue'
 
 export default {
   name: 'App',
   components: {
-    Questions
+    Questions,
+    Results
   },
   data () {
     return {
       countries: [],
       country: {},
-      score: 0
+      score: 0,
+      finished: false,
+      finalResult: null
     }
   },
   methods: {
     fetchQuestion() {
-      const index = Math.floor(Math.random() * this.countries.length)
-      this.country = this.countries[index]
+      if(this.finalResult !== null) {
+        this.finished = true
+      } else {
+        const index = Math.floor(Math.random() * this.countries.length)
+        this.country = this.countries[index]
+      }
     },
     increment(isCorrect) {
       if(isCorrect) {
         this.score++
       } else {
+        this.finalResult = this.score
         this.score = 0
       }
+    },
+    startAgain() {
+      this.finalResult = null
+      this.finished = false
+      this.fetchQuestion()
     }
   },
   mounted () {
